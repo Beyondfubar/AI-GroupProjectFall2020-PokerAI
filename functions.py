@@ -1,13 +1,13 @@
 import random
-from collections import defaultdict 
+from collections import defaultdict
 import sys
 
 def calcFrequency(hand):
     freqDict = {}
-    
+
     # Mark all array elements as not  visited
     visited = [False for i in range(len(hand))]
-        
+
     #Traverse through array elements
     #and count frequencies
 
@@ -15,7 +15,7 @@ def calcFrequency(hand):
         #Skip this element if already processed
         if visited[i] == True:
             continue
-        
+
         #Count frequency
         count = 1
         for j in range (i + 1, len(hand), 1):
@@ -23,7 +23,7 @@ def calcFrequency(hand):
                 visited[j]  = True
                 count += 1
         freqDict[hand[i]] = count
-        
+
         print(hand[i], count)
 
 
@@ -37,7 +37,7 @@ def dealHoleCards(deck, players):
         for player in players:
             player.append(deck[x])
 
-def dealFlopCards(deck):
+def dealFlopCards(deck, flop=None):
     for x in range(3):
         flop[x] = deck[x]
     return flop
@@ -56,7 +56,7 @@ def dealRiverCard(deck):
     riverCard = deck.pop()
     return riverCard
 
-    
+
 
 
 
@@ -77,22 +77,28 @@ def determineHandStrength(deck, possibleCardsInDeck, removedCardFromDeck, hand):
     hand.sort()
     card1  = hand[0]
     card2 = hand[1]
-        
+
 
     deckRemaingSize = len(possibleCardsInDeck)
 
     if card1 in deck or card2 in deck:
+        print("Card 1 in deck or card 2 in Deck"
+              "Pair!")
         #call twoCardsSameRank function
-    
+
     #two different pairs if statement
 
     elif card1 in deck and card2 in deck:
+        print("Card 1 in deck or card 2 in Deck TWO"
+              "Triple")
         #call threeCardsSameRank function
 
     #figure out how to call flush function
 
-    elif
+    elif card1 in deck and card2 in deck:
+        print("Flush attempt: if partial flush is possible we should arrive here")
 
+    # I assume we're calculating winning chance here.
     winningChance = 0
     ######
 
@@ -114,7 +120,8 @@ def AIStartPhase():
 
 
 def AIActingPhase():
-    #call check strengthOfHand function
+    print("Acting phase") # My compiler freaks out over comments but no code so print statements!
+    #call check strengthOfHand functionA
 
     #if AI has a pair in hand
         #call check function
@@ -130,9 +137,9 @@ def AIActingPhase():
         #if players Bet or RAISE AND AI had < 20% chance of getting one of the desired hands
             #call AI fold function
             #AI Losses "money"
-        #    
-        
-         
+        #
+
+
 
 
 
@@ -155,7 +162,7 @@ def pairProbability(possibleCardsInDeck, hand):
     pairCount = 0
     pairPercentage = 0
 
-    #Traverse through dictionary and check if there is a pair 
+    #Traverse through dictionary and check if there is a pair
     for key in freqDict:
         if freqDict[key] == 2:
             print("This card has a pair of two")
@@ -164,7 +171,7 @@ def pairProbability(possibleCardsInDeck, hand):
     for card in range(len(cardsWithPairs)):
         if card in possibleCardsInDeck:
             pairCount = possibleCardsInDeck.count(card)
-    
+
     pairPercentage = pairCount/len(possibleCardsInDeck)
 
     return pairPercentage
@@ -183,7 +190,7 @@ def threeOfAKindProb(possibleCardsInDeck, hand):
     card1 = hand[0]
     card2 = hand[1]
 
-    #Traverse through dictionary and check if there is a pair 
+    #Traverse through dictionary and check if there is a pair
     for key in freqDict:
         if freqDict[key] == 3:
             print("This card has a pair of three")
@@ -192,7 +199,7 @@ def threeOfAKindProb(possibleCardsInDeck, hand):
     for card in range(len(cardsWithPairs)):
         if card in possibleCardsInDeck:
             pairCount = possibleCardsInDeck.count(card)
-    
+
     if card1 and card2 in possibleCardsInDeck:
         threeOfKindPct = (possibleCardsInDeck.count(card1) + possibleCardsInDeck.count(card2))/len(possibleCardsInDeck)
 
@@ -207,7 +214,7 @@ def straightProb(possibleCardsInDeck, hand):
     cardDifference = distanceBetweenCards(card1.rank, card2.rank)
 
     if cardDifference <= 5:
-        ("There is a possibility for a straight")    
+        print("There is a possibility for a straight")
 
     #straightPercentage = (number possibleValues left in deck by array/deckRemaingSize)
 
@@ -231,10 +238,10 @@ def flushProb(possibleCardsInDeck, hand):
     flushPct = max((card1Count/len(possibleCardsInDeck)), (card2Count/len(possibleCardsInDeck)))
 
     return flushPct
-    
-    
 
-def fullHouseProb(possibleCardsInDeck, hand):
+
+
+def fullHouseProb(possibleCardsInDeck, hand, twoCardsSameRank=None): # Added param. Check these out first for failures.
     fullHouseProb = 0
     fullHouseProb = threeOfAKindProb(possibleCardsInDeck, hand) * twoCardsSameRank(possibleCardsInDeck, hand)
     return fullHouseProb
@@ -250,22 +257,22 @@ def fourOfAKindProb(possibleCardsInDeck, hand):
     numOfCard2 = 0
 
     for card in possibleCardsInDeck:
-        if card.rank = card1.rank:
+        if card.rank == card1.rank: # Added an = here
             numOfCard1 += 1
         if card.rank == card2.rank:
             numOfCard2 += 1
 
     if card1.rank != card2.rank:
         if numOfCard1 >= 3:
-            fourOfAKindProb = (numOfCard1/deckRemainingSize) * (numOfCard1 - 1/ deckRemainingSize - 1 ) * (numOfCard1 -2 / deckRemainingSize - 2) 
+            fourOfAKindProb = (numOfCard1/deckRemainingSize) * (numOfCard1 - 1/ deckRemainingSize - 1 ) * (numOfCard1 -2 / deckRemainingSize - 2)
         if numOfCard2 >= 3:
-            fourOfAKindProb = (numOfCard1/deckRemainingSize) * (numOfCard1 - 1/ deckRemainingSize - 1 ) * (numOfCard1 -2 / deckRemainingSize - 2)     
+            fourOfAKindProb = (numOfCard1/deckRemainingSize) * (numOfCard1 - 1/ deckRemainingSize - 1 ) * (numOfCard1 -2 / deckRemainingSize - 2)
 
     if card1.rank == card2.rank:
         fourOfAKindProb = (numOfCard1/deckRemainingSize) * (numOfCard1 - 1/ deckRemainingSize - 1 )
-    
 
-def straightFlushProb():
+
+def straightFlushProb(fiveCardsSameSuitProb=None, fiveCardsInSequenceProb=None): # Added this to get it to compile (both)
     straightFlush = fiveCardsSameSuitProb * fiveCardsInSequenceProb
     return straightFlush
 
@@ -285,24 +292,24 @@ def royalFlushProb(possibleCardsInDeck, hand):
 
 
 
-    if card1.rank >= 10 or card2.rank >= 10:
-        if isRankInDeck(possibleCardsInDeck, 10) and isRankInDeck(possibleCardsInDeck, 11) and isRankInDeck(possibleCardsInDeck, 12) and isRankInDeck(possibleCardsInDeck, 13) and isRankInDeck(possibleCardsInDeck, 14):
-            part1Pct = (numOf10InDeck/deckRemainingSize * (numOfJInDeck/deckRemainingSize-1) * (numOfQInDeck/deckRemainingSize-2) * (numOfKInDeck/deckRemainingSize -3) * (numOfAInDeck/deckRemainingSize - 4)
-        
-        else:
-            part1Pct = 0
+    # if card1.rank >= 10 or card2.rank >= 10:
+    #     if isRankInDeck(possibleCardsInDeck, 10) and isRankInDeck(possibleCardsInDeck, 11) and isRankInDeck(possibleCardsInDeck, 12) and isRankInDeck(possibleCardsInDeck, 13) and isRankInDeck(possibleCardsInDeck, 14):
+    #         part1Pct = (numOf10InDeck/deckRemainingSize * (numOfJInDeck/deckRemainingSize-1) * (numOfQInDeck/deckRemainingSize-2) * (numOfKInDeck/deckRemainingSize -3) * (numOfAInDeck/deckRemainingSize - 4)
+    #
+    #     else:
+    #         part1Pct = 0
+    #
+    #
+    #     if isAllCardsSameSuit(possibleCardsInDeck, card10, cardJ, cardQ, cardK, cardA):
+    #         part2Pct = (1/deckRemainingSize) * (1/deckRemainingSize - 1) * (1/deckRemainingSize - 2) * (1/deckRemainingSize - 3) * (1/deckRemainingSize - 4)
+    #     else:
+    #         part2Pct = 0
+    #
+    #
+    #     royalSraightFlushPct = part1Pct * part2Pct
+    #
+    #     return royalSraightFlushPct
 
-
-        if isAllCardsSameSuit(possibleCardsInDeck, card10, cardJ, cardQ, cardK, cardA):
-            part2Pct = (1/deckRemainingSize) * (1/deckRemainingSize - 1) * (1/deckRemainingSize - 2) * (1/deckRemainingSize - 3) * (1/deckRemainingSize - 4)
-        else:
-            part2Pct = 0
-
-        
-        royalSraightFlushPct = part1Pct * part2Pct 
-
-        return royalSraightFlushPct
-        
 
 
 def numOfRankInDeck(deck, rank):
@@ -341,7 +348,7 @@ def bet(winningChance):
         print("AI will not be this round")
 
 
-     
+
 
 def check(winningChance):
     if winningChance >= 0.40:
@@ -359,13 +366,13 @@ def revealHand(players):
 
 
 
-   
 
 
 
 
 
-    
+
+
 
 
 
