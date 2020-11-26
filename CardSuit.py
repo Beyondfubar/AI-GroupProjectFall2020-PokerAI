@@ -4,7 +4,6 @@ class CardSuit:
         super().__init__()
         self.suits = suits
 
-
     def addSuits(self):
         self.suits.append("Hearts")
         self.suits.append("Clubs")
